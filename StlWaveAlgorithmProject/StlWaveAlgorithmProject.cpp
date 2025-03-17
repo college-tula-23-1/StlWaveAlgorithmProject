@@ -7,7 +7,8 @@ namespace fs = std::filesystem;
 int main()
 {
     WaveAlgorithm wa;
-    wa.MapFileName();
+    wa.MazeFileName();
+    wa.CreateMaze();
 
     /*fs::path cpath = fs::current_path();
 

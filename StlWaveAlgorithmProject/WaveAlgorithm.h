@@ -4,13 +4,22 @@
 #include <vector>
 #include <string>
 #include <filesystem>
+#include <fstream>
 
-enum CellType
+enum class CellType
 {
 	Space  = -1,
 	Wall   = -2,
 	Start  = 0,
 	Finish = -3
+};
+
+enum class MazeChar
+{
+	Space =  ' ',
+	Wall =   '#',
+	Start =  's',
+	Finish = 'f'
 };
 
 struct Cell
@@ -19,14 +28,14 @@ struct Cell
 	int column;
 };
 
-typedef std::vector<std::vector<int>> Map;
+typedef std::vector<std::vector<int>> Maze;
 typedef std::array<std::vector<Cell>, 2> Fronts;
 typedef std::vector<Cell> Path;
 
 class WaveAlgorithm
 {
-	std::string mapFileName;
-	Map mazeMap;
+	std::string mazeFileName;
+	Maze maze;
 	
 	Cell startCell;
 	Cell finishCell;
@@ -37,8 +46,8 @@ class WaveAlgorithm
 	Path path;
 
 public:
-	void MapFileName();
-	void CreateMazeMap();
+	void MazeFileName();
+	void CreateMaze();
 	void WaveMove();
 	void CreatePath();
 

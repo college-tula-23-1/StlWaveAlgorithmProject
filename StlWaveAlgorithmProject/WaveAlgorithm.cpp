@@ -2,7 +2,7 @@
 
 namespace fs = std::filesystem;
 
-void WaveAlgorithm::MapFileName()
+void WaveAlgorithm::MazeFileName()
 {
 	fs::path currentPuth = fs::current_path();
 
@@ -28,5 +28,22 @@ void WaveAlgorithm::MapFileName()
 				selectFile = dir_entry.path();
 				break;
 			}
-	std::cout << selectFile.string() << "\n";
+	//std::cout << selectFile.string() << "\n";
+	this->mazeFileName = selectFile.filename().string();
+}
+
+void WaveAlgorithm::CreateMaze()
+{
+	std::ifstream inStream(this->mazeFileName, std::ios::in);
+
+	if (!inStream.is_open()) return;
+	
+	int sizeLine{ 1024 };
+	char* mazeLine = new char[sizeLine] {};
+
+	while (!inStream.eof())
+	{
+		inStream.getline(mazeLine, sizeLine);
+		std::cout << mazeLine << "\n";
+	}
 }
