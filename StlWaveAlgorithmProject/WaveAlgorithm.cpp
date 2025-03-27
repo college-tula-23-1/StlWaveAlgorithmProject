@@ -2,6 +2,25 @@
 
 namespace fs = std::filesystem;
 
+enum BorderType
+{
+	TopLeft,
+	TopCenter,
+	TopRight,
+	MiddleLeft,
+	MiddleCenter,
+	MiddleRight,
+	BottomLeft,
+	BottomCenter,
+	BottomRight,
+	Vertical,
+	Horizontal
+};
+
+Border singleBorder{ { 218, 194, 191, 195, 197, 180, 192, 193, 217, 179, 196 } };
+Border doubleBorder{ { 201, 203, 187, 204, 206, 185, 200, 202, 188, 186, 205 } };
+
+
 void WaveAlgorithm::MazeFileName()
 {
 	fs::path currentPuth = fs::current_path();
@@ -76,7 +95,7 @@ void WaveAlgorithm::CreateMaze()
 }
 
 
-void WaveAlgorithm::WaveMove()
+bool WaveAlgorithm::WaveMove()
 {
 	std::array<Cell, 4> offsets{ { {-1, 0}, {0, 1}, {1, 0}, {0, -1} } };
 
@@ -100,6 +119,7 @@ void WaveAlgorithm::WaveMove()
 				
 				if (newCell == finishCell)
 				{
+					maze[newCell.row][newCell.column] = numberFront;
 					isFindFinish = true;
 					break;
 				}
@@ -116,6 +136,36 @@ void WaveAlgorithm::WaveMove()
 		
 		currentFront = !currentFront;
 	}
+
+	return isFindFinish;
+}
+
+void WaveAlgorithm::CreatePath()
+{
+	std::array<Cell, 4> offsets{ { {-1, 0}, {0, 1}, {1, 0}, {0, -1} } };
+
+	path.push_back(finishCell);
+	int currentNumber = maze[finishCell.row][finishCell.column];
+
+	while (currentNumber)
+	{
+		Cell currentCell = path[path.size() - 1];
+
+		for (auto offset : offsets)
+		{
+			Cell candidat{ currentCell.row + offset.row,
+						   currentCell.column + offset.column };
+			if (maze[candidat.row][candidat.column] == currentNumber - 1)
+			{
+				path.push_back(candidat);
+				break;
+			}
+		}
+
+		currentNumber--;
+	}
+
+	std::reverse(path.begin(), path.end());
 }
 
 
@@ -154,4 +204,44 @@ void WaveAlgorithm::ShowMaze()
 
 		std::cout << "\n";
 	}
+}
+
+void WaveAlgorithm::ShowPath()
+{
+	int row{};
+	for (auto line : maze)
+	{
+		int column{};
+		for (auto item : line)
+		{
+			if(maze[row][column] == (int)CellType::Wall)
+				std::cout << (char)MazeType::Wall 
+						  << (char)MazeType::Wall;
+			else
+			{
+				Cell cell{ row, column };
+				if (std::find(path.begin(), path.end(), cell) != path.end())
+					std::cout << std::setw(2) << maze[row][column];
+				else
+					std::cout << (char)CharType::Space << (char)CharType::Space;
+			}
+			column++;
+		}
+		std::cout << "\n";
+		row++;
+	}
+
+}
+
+void WaveAlgorithm::ShowPathAscii()
+{
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	system("cls");
+
+	COORD position{ 10, 5 };
+	
+	SetConsoleCursorPosition(console, position);
+
+	std::cout << "Hello world";
 }

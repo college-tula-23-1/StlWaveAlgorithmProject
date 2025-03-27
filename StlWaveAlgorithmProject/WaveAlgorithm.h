@@ -7,6 +7,8 @@
 #include <fstream>
 #include <iomanip>
 
+#include <Windows.h>
+
 enum class CellType
 {
 	Space  = -1,
@@ -45,6 +47,8 @@ struct Cell
 typedef std::vector<std::vector<int>> Maze;
 typedef std::array<std::vector<Cell>, 2> Fronts;
 typedef std::vector<Cell> Path;
+typedef std::array<char, 11> Border;
+
 
 class WaveAlgorithm
 {
@@ -62,9 +66,11 @@ class WaveAlgorithm
 public:
 	void MazeFileName();
 	void CreateMaze();
-	void WaveMove();
+	bool WaveMove();
 	void CreatePath();
 
 	void ShowMaze();
+	void ShowPath();
+	void ShowPathAscii();
 };
 
