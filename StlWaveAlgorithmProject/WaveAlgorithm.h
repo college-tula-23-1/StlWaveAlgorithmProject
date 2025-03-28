@@ -63,6 +63,8 @@ class WaveAlgorithm
 
 	Path path;
 
+	void PrintChar(HANDLE console, int row, int column, char symbol);
+
 public:
 	void MazeFileName();
 	void CreateMaze();

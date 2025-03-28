@@ -21,6 +21,13 @@ Border singleBorder{ { 218, 194, 191, 195, 197, 180, 192, 193, 217, 179, 196 } }
 Border doubleBorder{ { 201, 203, 187, 204, 206, 185, 200, 202, 188, 186, 205 } };
 
 
+void WaveAlgorithm::PrintChar(HANDLE console, int row, int column, char symbol)
+{
+	COORD position{ column, row };
+	SetConsoleCursorPosition(console, position);
+	std::cout << symbol;
+}
+
 void WaveAlgorithm::MazeFileName()
 {
 	fs::path currentPuth = fs::current_path();
@@ -93,7 +100,6 @@ void WaveAlgorithm::CreateMaze()
 		}
 	}
 }
-
 
 bool WaveAlgorithm::WaveMove()
 {
@@ -168,7 +174,6 @@ void WaveAlgorithm::CreatePath()
 	std::reverse(path.begin(), path.end());
 }
 
-
 void WaveAlgorithm::ShowMaze()
 {
 	int row{};
@@ -236,12 +241,82 @@ void WaveAlgorithm::ShowPath()
 void WaveAlgorithm::ShowPathAscii()
 {
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-
 	system("cls");
 
-	COORD position{ 10, 5 };
-	
-	SetConsoleCursorPosition(console, position);
+	int row{};
+	for (auto line : maze)
+	{
+		int column{};
+		for (auto item : line)
+		{
+			if (maze[row][column] == (int)CellType::Wall)
+				std::cout << (char)MazeType::Wall;
+				//<< (char)MazeType::Wall;
+			else
+				std::cout << (char)MazeType::Space;
+				//<< (char)MazeType::Space;
+			column++;
+		}
+		std::cout << "\n";
+		row++;
+	}
 
-	std::cout << "Hello world";
+	// first cell
+	int diffRow = path[0].row - path[1].row;
+	int diffColumn = path[0].column - path[1].column;
+
+	if (!diffRow)
+	{
+		if (diffRow > 0)
+		{
+			//PrintChar(console, path[0].row, path[0].column - 1, singleBorder[Horizontal]);
+			PrintChar(console, path[0].row, path[0].column, singleBorder[MiddleRight]);
+		}
+			
+		else 
+		{
+			PrintChar(console, path[0].row, path[0].column, singleBorder[MiddleLeft]);
+			//PrintChar(console, path[0].row, path[0].column + 1, singleBorder[Horizontal]);
+		}
+			
+	}
+	else
+	{
+		if(diffColumn > 0)
+			PrintChar(console, path[0].row, path[0].column, singleBorder[BottomCenter]);
+		else
+			PrintChar(console, path[0].row, path[0].column, singleBorder[TopCenter]);
+	}
+
+	for (int i{ 1 }; i < path.size() - 1; i++)
+	{
+		Cell curr = path[i];
+		Cell prev = path[i - 1];
+		Cell next = path[i + 1];
+
+		if(curr.column > prev.column && curr.column < next.column ||
+			curr.column < prev.column && curr.column > next.column)
+			PrintChar(console, curr.row, curr.column, singleBorder[Horizontal]);
+
+		if (curr.row > prev.row && curr.row < next.row ||
+			curr.row < prev.row && curr.row > next.row)
+			PrintChar(console, curr.row, curr.column, singleBorder[Vertical]);
+
+		if (curr.column > prev.column && curr.row < next.row ||
+			curr.row < prev.row && curr.column > next.column)
+			PrintChar(console, curr.row, curr.column, singleBorder[TopRight]);
+
+		if (curr.column < prev.column && curr.row < next.row ||
+			curr.row < prev.row && curr.column < next.column)
+			PrintChar(console, curr.row, curr.column, singleBorder[TopLeft]);
+
+		if (curr.column > prev.column && curr.row > next.row ||
+			curr.row > prev.row && curr.column > next.column)
+			PrintChar(console, curr.row, curr.column, singleBorder[BottomRight]);
+
+		if (curr.row > prev.row && curr.column < next.column ||
+			curr.column < prev.column && curr.row > next.row)
+			PrintChar(console, curr.row, curr.column, singleBorder[BottomLeft]);
+	}
+	PrintChar(console, maze.size() + 1, 0, '\n');
 }

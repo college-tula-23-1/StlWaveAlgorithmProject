@@ -8,15 +8,17 @@ int main()
 {
     WaveAlgorithm wa;
 
-    /*wa.MazeFileName();
+    wa.MazeFileName();
     wa.CreateMaze();
     wa.ShowMaze();
     wa.WaveMove();
     std::cout << "\n";
+
     wa.ShowMaze();
     std::cout << "\n";
+
     wa.CreatePath();
-    wa.ShowPath();*/
+    wa.ShowPath();
 
     wa.ShowPathAscii();
 }
